@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin>
+    <id>com.stumpfdev.playwrightrecorder</id>
+    <name>Playwright Recorder</name>
+    <vendor>Arthur Stumpf</vendor>
+    <description><![CDATA[
+      <h2>Playwright Recorder</h2>
+      <p>Record UI flows and generate Playwright tests directly in JetBrains IDEs. Capture locators, preview highlights, and insert steps at the cursor.</p>
+      <ul>
+        <li>Record JS/TS or Python tests with codegen.</li>
+        <li>Insert steps at cursor or create a new test file.</li>
+        <li>Locator picker with role/label/testid intelligence.</li>
+        <li>Preview and highlight locators in the browser.</li>
+        <li>Trace viewer and browser lifecycle controls.</li>
+      </ul>
+      <p><img src="https://raw.githubusercontent.com/arthurQS/playwright-plugin-for-intelij/main/src/main/resources/screenshots/toolwindow.png" alt="Tool window" width="800"/></p>
+      <p><img src="https://raw.githubusercontent.com/arthurQS/playwright-plugin-for-intelij/main/src/main/resources/screenshots/locator.png" alt="Locator picker" width="800"/></p>
+    ]]></description>
+    <change-notes><![CDATA[
+      <ul>
+        <li>Improved Playwright detection and install flow.</li>
+        <li>Robust output merge with dedupe and formatting.</li>
+        <li>Tool window status and inline actions.</li>
+      </ul>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Playwright Recorder"
+                    factoryClass="com.stumpfdev.playwrightrecorder.ui.RecorderToolWindowFactory"
+                    anchor="right"
+                    canCloseContent="false"/>
+        <startupActivity implementation="com.stumpfdev.playwrightrecorder.ui.RecorderStartupActivity"/>
+        <projectService serviceImplementation="com.stumpfdev.playwrightrecorder.settings.PlaywrightSettingsService"/>
+        <projectConfigurable instance="com.stumpfdev.playwrightrecorder.settings.PlaywrightSettingsConfigurable"/>
+        <statusBarWidgetFactory implementation="com.stumpfdev.playwrightrecorder.ui.RecorderStatusWidgetFactory"
+                                id="PlaywrightRecorderStatus"/>
+    </extensions>
+
+    <actions>
+        <group id="PlaywrightRecorder.Toolbar" text="Playwright Recorder" popup="false">
+            <action id="PlaywrightRecorder.Start" class="com.stumpfdev.playwrightrecorder.actions.StartRecordingAction" text="Start Recording"/>
+            <action id="PlaywrightRecorder.Stop" class="com.stumpfdev.playwrightrecorder.actions.StopRecordingAction" text="Stop Recording"/>
+            <action id="PlaywrightRecorder.PickLocator" class="com.stumpfdev.playwrightrecorder.actions.PickLocatorAction" text="Pick Locator"/>
+            <action id="PlaywrightRecorder.ResetContext" class="com.stumpfdev.playwrightrecorder.actions.ResetContextAction" text="Reset Context"/>
+            <separator/>
+            <action id="PlaywrightRecorder.RecordAtCursor" class="com.stumpfdev.playwrightrecorder.actions.RecordAtCursorAction" text="Record at Cursor"/>
+            <action id="PlaywrightRecorder.RecordNewTest" class="com.stumpfdev.playwrightrecorder.actions.RecordNewTestAction" text="Record New Test"/>
+            <separator/>
+            <action id="PlaywrightRecorder.ShowBrowsers" class="com.stumpfdev.playwrightrecorder.actions.ShowBrowsersAction" text="Show Browsers"/>
+            <action id="PlaywrightRecorder.CloseAll" class="com.stumpfdev.playwrightrecorder.actions.CloseAllBrowsersAction" text="Close All Browsers"/>
+            <action id="PlaywrightRecorder.ShowTraceViewer" class="com.stumpfdev.playwrightrecorder.actions.ShowTraceViewerAction" text="Show Trace Viewer"/>
+        </group>
+    </actions>
+</idea-plugin>
