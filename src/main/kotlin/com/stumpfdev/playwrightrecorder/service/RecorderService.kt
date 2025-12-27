@@ -1,8 +1,8 @@
 ﻿package com.stumpfdev.playwrightrecorder.service
 
 import com.intellij.execution.process.OSProcessHandler
-import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
+import com.intellij.execution.process.ProcessListener
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -132,7 +132,9 @@ class RecorderService(private val project: Project) {
         statusService.setStatus("Playwright: recording")
         logService.info("Recording started (${selectedLanguage.name.lowercase()}).")
         val buffer = StringBuilder()
-        handler.addProcessListener(object : ProcessAdapter() {
+        handler.addProcessListener(object : ProcessListener {
+            override fun startNotified(event: ProcessEvent) {}
+
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
                 buffer.append(event.text)
             }
@@ -152,6 +154,8 @@ class RecorderService(private val project: Project) {
                 handlePendingInsert()
                 cleanupOutputFiles()
             }
+
+            override fun processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean) {}
         })
         outputBuffer = buffer
         processHandler = handler
@@ -438,10 +442,16 @@ class RecorderService(private val project: Project) {
             .redirectErrorStream(true)
             .start()
         val handler = OSProcessHandler(process, command)
-        handler.addProcessListener(object : ProcessAdapter() {
+        handler.addProcessListener(object : ProcessListener {
+            override fun startNotified(event: ProcessEvent) {}
+
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
                 indicator.text2 = event.text.trim()
             }
+
+            override fun processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean) {}
+
+            override fun processTerminated(event: ProcessEvent) {}
         })
         handler.startNotify()
         handler.waitFor()
@@ -520,7 +530,9 @@ class RecorderService(private val project: Project) {
             .redirectErrorStream(true)
             .start()
         val handler = OSProcessHandler(process, command.joinToString(" "))
-        handler.addProcessListener(object : ProcessAdapter() {
+        handler.addProcessListener(object : ProcessListener {
+            override fun startNotified(event: ProcessEvent) {}
+
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
                 handleBridgeOutput(event.text)
             }
@@ -529,6 +541,8 @@ class RecorderService(private val project: Project) {
                 bridgeHandler = null
                 bridgeInput = null
             }
+
+            override fun processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean) {}
         })
         bridgeHandler = handler
         bridgeInput = BufferedWriter(OutputStreamWriter(process.outputStream, StandardCharsets.UTF_8))
