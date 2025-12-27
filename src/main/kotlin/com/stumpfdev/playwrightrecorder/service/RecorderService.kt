@@ -116,7 +116,7 @@ class RecorderService(private val project: Project) {
 
         val outputFile = createCodegenOutputFile(target)
         codegenOutputFile = outputFile
-        val targetFile = resolveTargetOutputFile(target)
+        val targetFile = resolveTargetOutputFile(selectedLanguage)
         targetOutputFile = targetFile
         preRecordingTargetContent = if (targetFile.exists()) targetFile.readText() else null
         val command = buildCodegenCommand(target, url, outputFile) ?: return false
