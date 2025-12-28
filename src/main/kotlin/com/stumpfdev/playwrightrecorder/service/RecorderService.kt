@@ -200,7 +200,7 @@ class RecorderService(private val project: Project) {
         return CodegenMapper.stepsToSnippet(selectedLanguage, lastSteps, indent)
     }
 
-    fun buildNewTestFileContent(projectIsTs: Boolean): String {
+    fun buildNewTestFileContent(): String {
         ensurePreferredLanguage()
         val steps = if (lastSteps.isEmpty()) listOf(RecordedStep("// TODO: record actions")) else lastSteps
         return CodegenMapper.defaultTestFile(selectedLanguage, steps)

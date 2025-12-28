@@ -18,9 +18,9 @@
     ]]></description>
     <change-notes><![CDATA[
       <ul>
-        <li>Improved Playwright detection and install flow.</li>
-        <li>Robust output merge with dedupe and formatting.</li>
-        <li>Tool window status and inline actions.</li>
+        <li>Deprecated API replacements for future IDE compatibility.</li>
+        <li>Improved locator intelligence (role/label/testid).</li>
+        <li>Output merge improvements and language resolution.</li>
       </ul>
     ]]></change-notes>
 

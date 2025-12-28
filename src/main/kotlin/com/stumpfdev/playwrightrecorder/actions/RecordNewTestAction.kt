@@ -41,7 +41,7 @@ class RecordNewTestAction : AnAction() {
         val ext = service.getSuggestedFileExtension(isTs)
         val settings = project.getService(PlaywrightSettingsService::class.java).get()
         val testsDir = File(basePath, settings.testsDir.ifBlank { "tests" })
-        val content = service.buildNewTestFileContent(isTs)
+        val content = service.buildNewTestFileContent()
         val file = createUniqueTestFile(testsDir, ext)
         WriteCommandAction.runWriteCommandAction(project) {
             FileUtil.ensureDir(testsDir)
