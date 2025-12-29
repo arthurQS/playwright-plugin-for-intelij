@@ -144,6 +144,7 @@ class RecorderService(private val project: Project) {
                 lastGeneratedCode = raw
                 lastSteps = CodegenMapper.extractSteps(selectedLanguage, raw)
                 updateOutputFileWithSteps(lastSteps)
+                ensureOutputFileExists()
                 lastGeneratedFile = targetOutputFile
                 onStepsUpdated?.invoke(lastSteps, lastGeneratedCode)
                 outputBuffer = null
@@ -178,6 +179,7 @@ class RecorderService(private val project: Project) {
                     lastGeneratedCode = raw
                     lastSteps = CodegenMapper.extractSteps(selectedLanguage, raw)
                     updateOutputFileWithSteps(lastSteps)
+                    ensureOutputFileExists()
                     lastGeneratedFile = targetOutputFile
                     onStepsUpdated?.invoke(lastSteps, lastGeneratedCode)
                     logService.info("Steps captured after stop: ${lastSteps.size}.")
@@ -390,6 +392,16 @@ class RecorderService(private val project: Project) {
         val existing = preRecordingTargetContent ?: if (file.exists()) file.readText() else ""
         val updated = CodegenMapper.mergeStepsIntoFile(selectedLanguage, existing, steps) ?: return
         file.writeText(updated)
+    }
+
+    private fun ensureOutputFileExists() {
+        val file = targetOutputFile ?: return
+        if (file.exists()) return
+        val content = CodegenMapper.defaultTestFile(
+            selectedLanguage,
+            listOf(RecordedStep("// TODO: record actions"))
+        )
+        file.writeText(content)
     }
 
     private fun cleanupOutputFiles() {

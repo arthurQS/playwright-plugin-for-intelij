@@ -26,6 +26,7 @@ import java.awt.FlowLayout
 import javax.swing.JLabel
 import javax.swing.JButton
 import javax.swing.JPanel
+import javax.swing.JTabbedPane
 import javax.swing.Timer
 import javax.swing.event.DocumentEvent
 
@@ -47,11 +48,17 @@ class RecorderToolWindowPanel(private val project: Project) : JPanel(BorderLayou
     private val highlightButton = JButton("Highlight")
     private val stopPreviewButton = JButton("Stop Preview")
     private val statusTimer = Timer(1000) { updateStatusLabel() }
+    private val recorderPanel = JPanel(BorderLayout())
+    private val testRunnerPanel = TestRunnerPanel(project)
 
     init {
         border = JBUI.Borders.empty(8)
-        add(createToolbar(), BorderLayout.NORTH)
-        add(createCenter(), BorderLayout.CENTER)
+        recorderPanel.add(createToolbar(), BorderLayout.NORTH)
+        recorderPanel.add(createCenter(), BorderLayout.CENTER)
+        val tabs = JTabbedPane()
+        tabs.addTab("Recorder", recorderPanel)
+        tabs.addTab("Test Runner", testRunnerPanel)
+        add(tabs, BorderLayout.CENTER)
         refreshTargets()
         service.onStepsUpdated = { steps, raw -> updateSteps(steps, raw) }
         service.onLocatorPicked = { locator -> locatorField.text = locator }

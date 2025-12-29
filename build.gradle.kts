@@ -35,5 +35,9 @@ tasks {
     runIde {
         // Disable bundled Gradle plugin to avoid GradleJvmSupportMatrix state errors in sandbox
         systemProperty("idea.plugins.disabled", "org.jetbrains.plugins.gradle,com.intellij.gradle")
+        // Disable GotIt tooltips to avoid sandbox UI balloon errors
+        systemProperty("ide.got.it.enabled", "false")
+        systemProperty("ide.show.tips.on.startup.default.value", "false")
+        systemProperty("ide.show.tips.on.startup", "false")
     }
 }
